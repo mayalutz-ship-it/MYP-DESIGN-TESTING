@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEON VIBE // Streetwear & Apparel</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                    },
+                    colors: {
+                        neonPink: '#FF007A',
+                        neonPurple: '#7B2CBF',
+                        neonCyan: '#00F0FF',
+                        neonYellow: '#FFE600',
+                        darkBg: '#0D0914',
+                    },
+                    animation: {
+                        'gradient-x': 'gradient-x 10s ease infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                        'float-delayed': 'float 6s ease-in-out 3s infinite',
+                        'pulse-glow': 'pulse-glow 2s ease-in-out infinite',
+                        'spin-slow': 'spin 12s linear infinite',
+                    },
+                    keyframes: {
+                        'gradient-x': {
+                            '0%, 100%': { 'background-size': '200% 200%', 'background-position': 'left center' },
+                            '50%': { 'background-size': '200% 200%', 'background-position': 'right center' },
+                        },
+                        'float': {
+                            '0%, 100%': { transform: 'translateY(0px) rotate(0deg)' },
+                            '50%': { transform: 'translateY(-15px) rotate(3deg)' },
+                        },
+                        'pulse-glow': {
+                            '0%, 100%': { opacity: '0.6', transform: 'scale(1)' },
+                            '50%': { opacity: '1', transform: 'scale(1.05)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom Custom Scrollbar & Utility Styles */
+        body {
+            background-color: #0D0914;
+            color: #FFFFFF;
+            overflow-x: hidden;
+        }
+
+        /* Glassmorphism Styles */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+        }
+
+        .glass-nav {
+            background: rgba(13, 9, 20, 0.75);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Page Transitions */
+        .page-view {
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+
+        .page-hidden {
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(20px);
+            position: absolute;
+            width: 100%;
+            top: 0;
+            left: 0;
+            visibility: hidden;
+        }
+
+        .page-active {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateY(0);
+            position: relative;
+            visibility: visible;
+        }
+
+        /* Background Particle Effect Canvas */
+        #bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* Custom Hover Gradient Text */
+        .gradient-text {
+            background: linear-gradient(135deg, #FF007A, #00F0FF);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0D0914;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #7B2CBF;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #FF007A;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased selection:bg-neonPink selection:text-white">
+
+    <!-- Interactive Canvas Background for Floating Particles -->
+    <canvas id="bg-canvas"></canvas>
+
+    <!-- FLOATING DECORATIVE BLUBS -->
+    <div class="fixed -top-32 -left-32 w-96 h-96 bg-neonPink/20 rounded-full blur-[120px] pointer-events-none z-0 animate-pulse-glow"></div>
+    <div class="fixed top-1/2 -right-32 w-96 h-96 bg-neonCyan/20 rounded-full blur-[120px] pointer-events-none z-0 animate-pulse-glow" style="animation-delay: 1s;"></div>
+    <div class="fixed -bottom-32 left-1/3 w-96 h-96 bg-neonPurple/30 rounded-full blur-[120px] pointer-events-none z-0 animate-pulse-glow" style="animation-delay: 2s;"></div>
+
+    <!-- MAIN WRAPPER -->
+    <div class="relative z-10 flex flex-col min-h-screen">
+
+        <!-- NAVBAR -->
+        <header class="sticky top-0 z-40 glass-nav transition-all duration-300">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+                <!-- Logo -->
+                <a href="#" onclick="switchPage('home')" class="flex items-center gap-2 group">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-neonPink via-neonPurple to-neonCyan flex items-center justify-center font-black text-xl tracking-tighter group-hover:rotate-12 transition-transform duration-300 shadow-lg shadow-neonPink/30">
+                        NV
+                    </div>
+                    <span class="font-extrabold text-2xl tracking-wider text-white">NEON<span class="gradient-text">VIBE</span></span>
+                </a>
+
+                <!-- Nav Links -->
+                <nav class="hidden md:flex items-center gap-8 font-semibold text-sm tracking-wide">
+                    <button onclick="switchPage('home')" class="hover:text-neonCyan transition-colors relative py-1 after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-[2px] after:bg-neonCyan hover:after:w-full after:transition-all">COLLECTION</button>
+                    <a href="#featured" onclick="switchPage('home')" class="hover:text-neonPink transition-colors relative py-1 after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-[2px] after:bg-neonPink hover:after:w-full after:transition-all">TRENDING</a>
+                    <button onclick="switchPage('checkout')" class="hover:text-neonYellow transition-colors relative py-1 after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-[2px] after:bg-neonYellow hover:after:w-full after:transition-all">CHECKOUT</button>
+                </nav>
+
+                <!-- Floating Cart Trigger Button -->
+                <div class="flex items-center gap-4">
+                    <button onclick="switchPage('checkout')" class="relative glass-card p-3 rounded-xl hover:border-neonCyan transition-all group hover:scale-105 active:scale-95">
+                        <i class="fa-solid fa-bag-shopping text-xl text-white group-hover:text-neonCyan transition-colors"></i>
+                        <span id="cart-count" class="absolute -top-2 -right-2 bg-gradient-to-r from-neonPink to-neonPurple text-white text-xs font-bold w-6 h-6 rounded-full flex items-center justify-center shadow-md animate-bounce">0</span>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- ==================== PAGE 1: HOME & COLLECTION ==================== -->
+        <main id="page-home" class="page-view page-active flex-grow">
+            <!-- HERO SECTION -->
+            <section class="relative min-h-[85vh] flex items-center justify-center pt-8 pb-16 overflow-hidden">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full grid md:grid-cols-2 gap-12 items-center">
+                    
+                    <!-- Hero Text -->
+                    <div class="space-y-6 text-center md:text-left z-10">
+                        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-card border-neonPink/30 text-neonPink font-bold text-xs tracking-wider uppercase animate-pulse">
+                            <i class="fa-solid fa-bolt"></i> Cyber Drop 2026 Live Now
+                        </div>
+                        <h1 class="text-5xl sm:text-6xl lg:text-7xl font-black leading-tight tracking-tight uppercase">
+                            Wear The <br>
+                            <span class="gradient-text animate-gradient-x">Future Vibe</span>
+                        </h1>
+                        <p class="text-slate-300 text-base sm:text-lg max-w-lg font-medium leading-relaxed mx-auto md:mx-0">
+                            High-contrast street culture apparel designed for digital nomads and urban pioneers. Limited runs. Unlimited clout.
+                        </p>
+
+                        <div class="flex flex-wrap items-center justify-center md:justify-start gap-4 pt-4">
+                            <a href="#shop" class="px-8 py-4 rounded-xl bg-gradient-to-r from-neonPink via-neonPurple to-neonCyan text-white font-extrabold shadow-lg shadow-neonPink/25 hover:shadow-neonPink/50 hover:scale-105 transition-all duration-300 flex items-center gap-2 group">
+                                EXPLORE DROP <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                            </a>
+                            <button onclick="scrollToFeatured()" class="px-8 py-4 rounded-xl glass-card font-extrabold hover:bg-white/10 hover:border-white/40 transition-all">
+                                VIEW LOOKBOOK
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Hero Visual Motion Elements -->
+                    <div class="relative flex items-center justify-center">
+                        <!-- Floating Badge -->
+                        <div class="absolute -top-6 -left-6 z-20 glass-card p-4 rounded-2xl border-neonCyan/40 shadow-xl animate-float hidden sm:flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full bg-neonCyan/20 flex items-center justify-center text-neonCyan">
+                                <i class="fa-solid fa-fire text-lg"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs text-slate-400">Trending Item</p>
+                                <p class="text-sm font-bold text-white">Neon Cyber Hoodie</p>
+                            </div>
+                        </div>
+
+                        <!-- Floating Discount Sticker -->
+                        <div class="absolute -bottom-6 -right-6 z-20 bg-neonYellow text-black font-black p-4 rounded-full w-24 h-24 flex flex-col items-center justify-center rotate-12 shadow-xl shadow-neonYellow/20 animate-float-delayed">
+                            <span class="text-xs uppercase leading-none">Up To</span>
+                            <span class="text-2xl font-black leading-none">40%</span>
+                            <span class="text-[10px] uppercase leading-none">OFF</span>
+                        </div>
+
+                        <!-- Main Image Display Container with Gradient Ring -->
+                        <div class="relative w-full max-w-md aspect-square rounded-3xl p-1 bg-gradient-to-tr from-neonPink via-neonPurple to-neonCyan animate-pulse-glow">
+                            <div class="w-full h-full bg-darkBg rounded-[22px] overflow-hidden relative group">
+                                <img src="https://images.unsplash.com/photo-1509631179647-0177331693ae?auto=format&fit=crop&w=800&q=80" alt="Hero Outfit" class="w-full h-full object-cover object-center group-hover:scale-110 transition-transform duration-700">
+                                <div class="absolute inset-0 bg-gradient-to-t from-darkBg via-transparent to-transparent opacity-60"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- PRODUCT SHOWCASE SECTION -->
+            <section id="shop" class="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                
+                <!-- Section Header & Filter Controls -->
+                <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
+                    <div>
+                        <div class="text-neonCyan font-bold text-sm tracking-widest uppercase mb-1">Curated Apparel</div>
+                        <h2 class="text-3xl sm:text-4xl font-black uppercase">THE LATEST DROPS</h2>
+                    </div>
+
+                    <!-- Category Filters -->
+                    <div class="flex flex-wrap gap-2 glass-card p-1.5 rounded-2xl self-start">
+                        <button onclick="filterProducts('all')" class="filter-btn active-filter px-5 py-2.5 rounded-xl font-bold text-sm transition-all bg-gradient-to-r from-neonPink to-neonPurple text-white shadow-md">All</button>
+                        <button onclick="filterProducts('hoodies')" class="filter-btn px-5 py-2.5 rounded-xl font-bold text-sm text-slate-300 hover:text-white transition-all">Hoodies</button>
+                        <button onclick="filterProducts('tees')" class="filter-btn px-5 py-2.5 rounded-xl font-bold text-sm text-slate-300 hover:text-white transition-all">Tees</button>
+                        <button onclick="filterProducts('jackets')" class="filter-btn px-5 py-2.5 rounded-xl font-bold text-sm text-slate-300 hover:text-white transition-all">Jackets</button>
+                    </div>
+                </div>
+
+                <!-- Product Grid -->
+                <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Products will be generated dynamically by JS -->
+                </div>
+            </section>
+        </main>
+
+
+        <!-- ==================== PAGE 2: CHECKOUT / BAG ==================== -->
+        <main id="page-checkout" class="page-view page-hidden flex-grow">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                
+                <!-- Progress Bar -->
+                <div class="max-w-xl mx-auto mb-12">
+                    <div class="flex justify-between items-center relative">
+                        <div class="absolute top-1/2 left-0 right-0 h-1 bg-white/10 -translate-y-1/2 z-0"></div>
+                        <div id="progress-line" class="absolute top-1/2 left-0 w-1/2 h-1 bg-gradient-to-r from-neonPink to-neonCyan -translate-y-1/2 z-0 transition-all duration-500"></div>
+
+                        <!-- Step 1 -->
+                        <div class="relative z-10 flex flex-col items-center gap-2">
+                            <div class="w-10 h-10 rounded-full bg-neonPink flex items-center justify-center font-bold text-white shadow-lg shadow-neonPink/50">1</div>
+                            <span class="text-xs font-bold text-white">Bag Review</span>
+                        </div>
+                        <!-- Step 2 -->
+                        <div class="relative z-10 flex flex-col items-center gap-2">
+                            <div id="step-2-icon" class="w-10 h-10 rounded-full bg-darkBg border-2 border-neonCyan flex items-center justify-center font-bold text-neonCyan shadow-lg">2</div>
+                            <span class="text-xs font-bold text-slate-300">Shipping</span>
+                        </div>
+                        <!-- Step 3 -->
+                        <div class="relative z-10 flex flex-col items-center gap-2">
+                            <div class="w-10 h-10 rounded-full bg-darkBg border-2 border-slate-700 flex items-center justify-center font-bold text-slate-500">3</div>
+                            <span class="text-xs font-bold text-slate-500">Payment</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid lg:grid-cols-12 gap-8 items-start">
+                    
+                    <!-- Left Side: Cart Items List -->
+                    <div class="lg:col-span-7 space-y-6">
+                        <div class="glass-card p-6 sm:p-8 rounded-3xl">
+                            <div class="flex justify-between items-center mb-6 pb-4 border-b border-white/10">
+                                <h2 class="text-2xl font-black uppercase flex items-center gap-3">
+                                    <i class="fa-solid fa-cart-shopping text-neonPink"></i> Shopping Bag
+                                </h2>
+                                <button onclick="switchPage('home')" class="text-xs font-bold text-neonCyan hover:underline flex items-center gap-1">
+                                    <i class="fa-solid fa-plus"></i> Add More Items
+                                </button>
+                            </div>
+
+                            <!-- Cart Items Container -->
+                            <div id="cart-items-container" class="space-y-4">
+                                <!-- Cart items populated via JS -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Side: Order Summary & Checkout Form -->
+                    <div class="lg:col-span-5 space-y-6">
+                        <div class="glass-card p-6 sm:p-8 rounded-3xl relative overflow-hidden border-neonPurple/30">
+                            <h3 class="text-xl font-extrabold uppercase mb-6 pb-4 border-b border-white/10">Order Summary</h3>
+
+                            <!-- Price Breakdown -->
+                            <div class="space-y-3 text-sm mb-6">
+                                <div class="flex justify-between text-slate-300">
+                                    <span>Subtotal</span>
+                                    <span id="summary-subtotal" class="font-bold text-white">$0.00</span>
+                                </div>
+                                <div class="flex justify-between text-slate-300">
+                                    <span>Shipping</span>
+                                    <span class="font-bold text-neonCyan">FREE</span>
+                                </div>
+                                <div id="discount-row" class="hidden flex justify-between text-neonYellow">
+                                    <span>Discount (20% OFF)</span>
+                                    <span id="summary-discount" class="font-bold">-$0.00</span>
+                                </div>
+                                <div class="flex justify-between text-lg font-black text-white pt-3 border-t border-white/10">
+                                    <span>Total</span>
+                                    <span id="summary-total" class="gradient-text">$0.00</span>
+                                </div>
+                            </div>
+
+                            <!-- Promo Code Input -->
+                            <div class="mb-6">
+                                <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Discount Code</label>
+                                <div class="flex gap-2">
+                                    <input type="text" id="promo-input" placeholder="Try 'NEON20'" class="bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm w-full focus:outline-none focus:border-neonPink transition-colors text-white uppercase tracking-wider">
+                                    <button onclick="applyPromo()" class="px-4 py-2.5 bg-white/10 hover:bg-neonPink text-white font-bold text-xs rounded-xl transition-all uppercase">Apply</button>
+                                </div>
+                            </div>
+
+                            <!-- User Information Form -->
+                            <form id="checkout-form" onsubmit="handleCheckout(event)" class="space-y-4">
+                                <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider pt-2">Shipping Details</h4>
+                                <div>
+                                    <input type="text" required placeholder="Full Name" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-neonCyan transition-all text-white">
+                                </div>
+                                <div>
+                                    <input type="email" required placeholder="Email Address" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-neonCyan transition-all text-white">
+                                </div>
+                                <div>
+                                    <input type="text" required placeholder="Shipping Address" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-neonCyan transition-all text-white">
+                                </div>
+
+                                <button type="submit" id="pay-btn" class="w-full py-4 rounded-xl bg-gradient-to-r from-neonPink via-neonPurple to-neonCyan text-white font-black text-sm tracking-wider uppercase shadow-lg shadow-neonPink/30 hover:scale-[1.02] active:scale-[0.98] transition-all mt-4 flex items-center justify-center gap-2">
+                                    <i class="fa-solid fa-lock"></i> Place Order Now
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </main>
+
+        <!-- FOOTER -->
+        <footer class="glass-nav mt-auto border-t border-white/10 py-8 relative z-10">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+                <p class="text-xs text-slate-400">© 2026 NEONVIBE Apparel Inc. All rights reserved.</p>
+                <div class="flex items-center gap-6 text-slate-400">
+                    <a href="#" class="hover:text-neonPink transition-colors"><i class="fa-brands fa-instagram text-lg"></i></a>
+                    <a href="#" class="hover:text-neonCyan transition-colors"><i class="fa-brands fa-tiktok text-lg"></i></a>
+                    <a href="#" class="hover:text-neonYellow transition-colors"><i class="fa-brands fa-discord text-lg"></i></a>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- QUICK VIEW MODAL -->
+    <div id="quick-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md opacity-0 pointer-events-none transition-opacity duration-300">
+        <div class="glass-card max-w-2xl w-full rounded-3xl overflow-hidden border-neonCyan/30 relative scale-95 transition-transform duration-300" id="modal-card">
+            <!-- Close Button -->
+            <button onclick="closeQuickView()" class="absolute top-4 right-4 z-10 w-10 h-10 rounded-full bg-black/50 border border-white/20 flex items-center justify-center text-white hover:bg-neonPink transition-colors">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div class="grid md:grid-cols-2">
+                <div class="h-64 md:h-full relative">
+                    <img id="modal-img" src="" alt="" class="w-full h-full object-cover">
+                </div>
+                <div class="p-6 sm:p-8 space-y-4 flex flex-col justify-between">
+                    <div>
+                        <span id="modal-category" class="text-xs font-bold text-neonCyan uppercase tracking-widest">Category</span>
+                        <h3 id="modal-title" class="text-2xl font-black uppercase text-white mt-1">Product Title</h3>
+                        <p id="modal-price" class="text-xl font-extrabold text-neonPink mt-2">$0.00</p>
+                        <p id="modal-desc" class="text-xs text-slate-300 mt-4 leading-relaxed">High-density visual fashion crafted with ultra-durable street tech fibers.</p>
+                    </div>
+
+                    <!-- Size Selector Mock -->
+                    <div class="space-y-2">
+                        <label class="text-xs font-bold text-slate-400 uppercase">Select Size</label>
+                        <div class="flex gap-2">
+                            <button class="w-10 h-10 rounded-xl glass-card font-bold text-xs hover:border-neonCyan transition-all focus:border-neonCyan focus:bg-neonCyan/20">S</button>
+                            <button class="w-10 h-10 rounded-xl glass-card font-bold text-xs hover:border-neonCyan transition-all focus:border-neonCyan focus:bg-neonCyan/20 border-neonCyan bg-neonCyan/20">M</button>
+                            <button class="w-10 h-10 rounded-xl glass-card font-bold text-xs hover:border-neonCyan transition-all focus:border-neonCyan focus:bg-neonCyan/20">L</button>
+                            <button class="w-10 h-10 rounded-xl glass-card font-bold text-xs hover:border-neonCyan transition-all focus:border-neonCyan focus:bg-neonCyan/20">XL</button>
+                        </div>
+                    </div>
+
+                    <button id="modal-add-btn" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-neonPink to-neonPurple text-white font-black text-sm uppercase tracking-wider shadow-lg shadow-neonPink/30 hover:scale-[1.02] transition-transform flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-bag-shopping"></i> Add To Bag
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- NOTIFICATION TOAST -->
+    <div id="toast" class="fixed bottom-6 right-6 z-50 glass-card border-neonCyan/50 px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-3 translate-y-24 opacity-0 transition-all duration-300">
+        <div class="w-8 h-8 rounded-full bg-neonCyan/20 flex items-center justify-center text-neonCyan">
+            <i class="fa-solid fa-check"></i>
+        </div>
+        <div>
+            <p id="toast-title" class="text-sm font-bold text-white">Item Added</p>
+            <p id="toast-msg" class="text-xs text-slate-300">Successfully added to your bag!</p>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // --- PRODUCT DATABASE ---
+        const products = [
+            {
+                id: 1,
+                name: "Cyberpunk Oversized Hoodie",
+                category: "hoodies",
+                price: 89.99,
+                badge: "HOT",
+                badgeColor: "from-neonPink to-neonPurple",
+                image: "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?auto=format&fit=crop&w=800&q=80",
+                description: "Heavyweight 450GSM cotton fleece hoodie featuring UV-reactive graphics and reflective trim."
+            },
+            {
+                id: 2,
+                name: "Neon Matrix Acid Tee",
+                category: "tees",
+                price: 45.00,
+                badge: "NEW",
+                badgeColor: "from-neonCyan to-blue-600",
+                image: "https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?auto=format&fit=crop&w=800&q=80",
+                description: "Vintage wash acid tee custom screenprinted with glitch aesthetics and boxy fit."
+            },
+            {
+                id: 3,
+                name: "Holographic Puffer Jacket",
+                category: "jackets",
+                price: 149.99,
+                badge: "LIMITED",
+                badgeColor: "from-neonYellow to-amber-500",
+                image: "https://images.unsplash.com/photo-1548883354-7622d03aca27?auto=format&fit=crop&w=800&q=80",
+                description: "Ultra-warm iridescent shell coat reflecting cyan and pink spectrums under ambient light."
+            },
+            {
+                id: 4,
+                name: "Glitch Spectrum Graphic Tee",
+                category: "tees",
+                price: 39.99,
+                badge: "POPULAR",
+                badgeColor: "from-neonPink to-neonPurple",
+                image: "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=800&q=80",
+                description: "Breathable organic cotton tee with digital error graphic art across the back."
+            },
+            {
+                id: 5,
+                name: "Tech-Cargo Windbreaker",
+                category: "jackets",
+                price: 119.50,
+                badge: "DROP 01",
+                badgeColor: "from-neonCyan to-teal-400",
+                image: "https://images.unsplash.com/photo-1578587018452-892bacefd3f2?auto=format&fit=crop&w=800&q=80",
+                description: "Water-resistant utility jacket fitted with multi-pocket system and tactical straps."
+            },
+            {
+                id: 6,
+                name: "Tokyo Cyber Vapor Hoodie",
+                category: "hoodies",
+                price: 95.00,
+                badge: "RARE",
+                badgeColor: "from-purple-600 to-neonPink",
+                image: "https://images.unsplash.com/photo-1509967419530-da38b4704bc6?auto=format&fit=crop&w=800&q=80",
+                description: "Relaxed drop-shoulder silhouette hoodie crafted for late night city roaming."
+            }
+        ];
+
+        // --- STATE MANAGEMENT ---
+        let cart = [];
+        let discountApplied = false;
+
+        // --- INITIALIZATION ---
+        window.addEventListener('DOMContentLoaded', () => {
+            renderProducts('all');
+            initBgParticles();
+        });
+
+        // --- PAGE SWITCHING SYSTEM ---
+        function switchPage(pageId) {
+            const homePage = document.getElementById('page-home');
+            const checkoutPage = document.getElementById('page-checkout');
+
+            if (pageId === 'checkout') {
+                homePage.classList.remove('page-active');
+                homePage.classList.add('page-hidden');
+                
+                checkoutPage.classList.remove('page-hidden');
+                checkoutPage.classList.add('page-active');
+                
+                renderCartCheckout();
+            } else {
+                checkoutPage.classList.remove('page-active');
+                checkoutPage.classList.add('page-hidden');
+                
+                homePage.classList.remove('page-hidden');
+                homePage.classList.add('page-active');
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // --- RENDER PRODUCTS ---
+        function renderProducts(category) {
+            const grid = document.getElementById('product-grid');
+            grid.innerHTML = '';
+
+            const filtered = category === 'all' 
+                ? products 
+                : products.filter(p => p.category === category);
+
+            filtered.forEach(p => {
+                const card = document.createElement('div');
+                card.className = "glass-card rounded-3xl overflow-hidden group hover:border-neonPink/50 transition-all duration-500 flex flex-col justify-between relative";
+                
+                card.innerHTML = `
+                    <div class="relative overflow-hidden aspect-[4/5] cursor-pointer" onclick="openQuickView(${p.id})">
+                        <!-- Badge -->
+                        <span class="absolute top-4 left-4 z-10 px-3 py-1 rounded-full bg-gradient-to-r ${p.badgeColor} text-white font-extrabold text-[10px] tracking-wider uppercase shadow-md">
+                            ${p.badge}
+                        </span>
+
+                        <!-- Product Image -->
+                        <img src="${p.image}" alt="${p.name}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                        
+                        <!-- Quick View Hover Overlay -->
+                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                            <span class="px-4 py-2 rounded-xl glass-card border-white/40 text-xs font-extrabold tracking-wider uppercase text-white shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
+                                Quick View
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Details -->
+                    <div class="p-6 space-y-4">
+                        <div>
+                            <span class="text-[10px] font-bold text-neonCyan uppercase tracking-widest">${p.category}</span>
+                            <h3 class="text-lg font-bold text-white group-hover:text-neonPink transition-colors truncate">${p.name}</h3>
+                        </div>
+
+                        <div class="flex items-center justify-between pt-2">
+                            <span class="text-xl font-extrabold text-white">$${p.price.toFixed(2)}</span>
+                            <button onclick="addToCart(${p.id})" class="px-4 py-2.5 rounded-xl bg-white/10 hover:bg-gradient-to-r hover:from-neonPink hover:to-neonPurple text-white text-xs font-bold transition-all duration-300 flex items-center gap-2 group/btn">
+                                <span>ADD</span> <i class="fa-solid fa-plus text-[10px] group-hover/btn:rotate-90 transition-transform"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // --- FILTER PRODUCTS BUTTON HANDLER ---
+        function filterProducts(category) {
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('bg-gradient-to-r', 'from-neonPink', 'to-neonPurple', 'text-white', 'shadow-md');
+                btn.classList.add('text-slate-300');
+            });
+            event.target.classList.add('bg-gradient-to-r', 'from-neonPink', 'to-neonPurple', 'text-white', 'shadow-md');
+            event.target.classList.remove('text-slate-300');
+
+            renderProducts(category);
+        }
+
+        // --- SHOPPING CART LOGIC ---
+        function addToCart(productId) {
+            const product = products.find(p => p.id === productId);
+            const existing = cart.find(item => item.id === productId);
+
+            if (existing) {
+                existing.quantity += 1;
+            } else {
+                cart.push({ ...product, quantity: 1 });
+            }
+
+            updateCartBadge();
+            showToast("Added To Cart!", `${product.name} is now in your bag.`);
+        }
+
+        function updateCartBadge() {
+            const totalCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+            document.getElementById('cart-count').innerText = totalCount;
+        }
+
+        function updateQuantity(productId, delta) {
+            const item = cart.find(i => i.id === productId);
+            if (item) {
+                item.quantity += delta;
+                if (item.quantity <= 0) {
+                    cart = cart.filter(i => i.id !== productId);
+                }
+            }
+            updateCartBadge();
+            renderCartCheckout();
+        }
+
+        function renderCartCheckout() {
+            const container = document.getElementById('cart-items-container');
+            container.innerHTML = '';
+
+            if (cart.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-12 space-y-4">
+                        <i class="fa-solid fa-bag-shopping text-5xl text-slate-600"></i>
+                        <p class="text-slate-400 font-bold">Your shopping bag is completely empty!</p>
+                        <button onclick="switchPage('home')" class="px-6 py-2.5 rounded-xl bg-neonPink text-white font-bold text-xs uppercase tracking-wider">
+                            Start Shopping
+                        </button>
+                    </div>
+                `;
+            } else {
+                cart.forEach(item => {
+                    const el = document.createElement('div');
+                    el.className = "flex items-center gap-4 p-4 rounded-2xl glass-card border-white/5";
+                    el.innerHTML = `
+                        <img src="${item.image}" alt="${item.name}" class="w-16 h-16 sm:w-20 sm:h-20 object-cover rounded-xl">
+                        <div class="flex-grow">
+                            <h4 class="font-bold text-sm text-white">${item.name}</h4>
+                            <p class="text-xs text-neonPink font-bold mt-1">$${item.price.toFixed(2)}</p>
+                        </div>
+                        <div class="flex items-center gap-2 glass-card px-3 py-1.5 rounded-xl">
+                            <button onclick="updateQuantity(${item.id}, -1)" class="text-xs text-slate-400 hover:text-white px-1">-</button>
+                            <span class="text-xs font-bold text-white px-1">${item.quantity}</span>
+                            <button onclick="updateQuantity(${item.id}, 1)" class="text-xs text-slate-400 hover:text-white px-1">+</button>
+                        </div>
+                    `;
+                    container.appendChild(el);
+                });
+            }
+
+            calculateTotals();
+        }
+
+        function calculateTotals() {
+            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const discount = discountApplied ? subtotal * 0.20 : 0;
+            const total = subtotal - discount;
+
+            document.getElementById('summary-subtotal').innerText = `$${subtotal.toFixed(2)}`;
+            document.getElementById('summary-discount').innerText = `-$${discount.toFixed(2)}`;
+            document.getElementById('summary-total').innerText = `$${total.toFixed(2)}`;
+
+            if (discountApplied) {
+                document.getElementById('discount-row').classList.remove('hidden');
+            }
+        }
+
+        function applyPromo() {
+            const input = document.getElementById('promo-input').value.trim().toUpperCase();
+            if (input === 'NEON20') {
+                discountApplied = true;
+                calculateTotals();
+                showToast("Promo Applied!", "20% discount code applied successfully!");
+            } else {
+                showToast("Invalid Code", "Please enter a valid promo code (Try NEON20)");
+            }
+        }
+
+        function handleCheckout(e) {
+            e.preventDefault();
+            if (cart.length === 0) {
+                showToast("Empty Cart", "Add items to your cart before checking out!");
+                return;
+            }
+
+            // Visual Success State
+            const btn = document.getElementById('pay-btn');
+            btn.innerHTML = `<i class="fa-solid fa-circle-notch animate-spin"></i> Processing Order...`;
+            
+            setTimeout(() => {
+                btn.innerHTML = `<i class="fa-solid fa-check"></i> Order Confirmed!`;
+                btn.className = "w-full py-4 rounded-xl bg-emerald-500 text-white font-black text-sm tracking-wider uppercase shadow-lg shadow-emerald-500/30";
+                
+                showToast("Success!", "Your futuristic streetwear order is placed!");
+                cart = [];
+                updateCartBadge();
+                
+                setTimeout(() => {
+                    switchPage('home');
+                    btn.className = "w-full py-4 rounded-xl bg-gradient-to-r from-neonPink via-neonPurple to-neonCyan text-white font-black text-sm tracking-wider uppercase shadow-lg shadow-neonPink/30 hover:scale-[1.02] active:scale-[0.98] transition-all mt-4 flex items-center justify-center gap-2";
+                    btn.innerHTML = `<i class="fa-solid fa-lock"></i> Place Order Now`;
+                }, 2500);
+            }, 1500);
+        }
+
+        // --- QUICK VIEW MODAL LOGIC ---
+        function openQuickView(id) {
+            const product = products.find(p => p.id === id);
+            document.getElementById('modal-img').src = product.image;
+            document.getElementById('modal-category').innerText = product.category;
+            document.getElementById('modal-title').innerText = product.name;
+            document.getElementById('modal-price').innerText = `$${product.price.toFixed(2)}`;
+            document.getElementById('modal-desc').innerText = product.description;
+
+            const addBtn = document.getElementById('modal-add-btn');
+            addBtn.onclick = () => {
+                addToCart(product.id);
+                closeQuickView();
+            };
+
+            const modal = document.getElementById('quick-modal');
+            const card = document.getElementById('modal-card');
+            modal.classList.remove('opacity-0', 'pointer-events-none');
+            card.classList.remove('scale-95');
+            card.classList.add('scale-100');
+        }
+
+        function closeQuickView() {
+            const modal = document.getElementById('quick-modal');
+            const card = document.getElementById('modal-card');
+            modal.classList.add('opacity-0', 'pointer-events-none');
+            card.classList.remove('scale-100');
+            card.classList.add('scale-95');
+        }
+
+        // --- TOAST NOTIFICATIONS ---
+        function showToast(title, msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-title').innerText = title;
+            document.getElementById('toast-msg').innerText = msg;
+
+            toast.classList.remove('translate-y-24', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-24', 'opacity-0');
+            }, 3000);
+        }
+
+        function scrollToFeatured() {
+            document.getElementById('shop').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // --- PARTICLES MOTION GRAPHICS BACKGROUND ---
+        function initBgParticles() {
+            const canvas = document.getElementById('bg-canvas');
+            const ctx = canvas.getContext('2d');
+
+            let width = canvas.width = window.innerWidth;
+            let height = canvas.height = window.innerHeight;
+
+            window.addEventListener('resize', () => {
+                width = canvas.width = window.innerWidth;
+                height = canvas.height = window.innerHeight;
+            });
+
+            const particles = Array.from({ length: 40 }, () => ({
+                x: Math.random() * width,
+                y: Math.random() * height,
+                radius: Math.random() * 2 + 1,
+                color: ['#FF007A', '#00F0FF', '#7B2CBF'][Math.floor(Math.random() * 3)],
+                vx: (Math.random() - 0.5) * 0.5,
+                vy: (Math.random() - 0.5) * 0.5,
+                alpha: Math.random() * 0.5 + 0.2
+            }));
+
+            function animate() {
+                ctx.clearRect(0, 0, width, height);
+
+                particles.forEach(p => {
+                    p.x += p.vx;
+                    p.y += p.vy;
+
+                    if (p.x < 0) p.x = width;
+                    if (p.x > width) p.x = 0;
+                    if (p.y < 0) p.y = height;
+                    if (p.y > height) p.y = 0;
+
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.radius, 0, Math.max(Math.PI * 2, 0));
+                    ctx.fillStyle = p.color;
+                    ctx.globalAlpha = p.alpha;
+                    ctx.shadowBlur = 10;
+                    ctx.shadowColor = p.color;
+                    ctx.fill();
+                });
+
+                requestAnimationFrame(animate);
+            }
+            animate();
+        }
+    </script>
+</body>
+</html>
